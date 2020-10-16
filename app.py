@@ -11,8 +11,7 @@ import plotly.graph_objects as go
 
 
 def main():
-    FILE_TYPES = ["csv"]
-    file = st.sidebar.file_uploader("Upload your CSV file", type=FILE_TYPES)
+    file = st.sidebar.file_uploader("Upload your CSV file")
 
     # Render the readme as markdown using st.markdown.
     with open('instructions.md') as finstruct:
