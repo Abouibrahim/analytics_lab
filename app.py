@@ -55,14 +55,14 @@ def main():
         crosstab = df.pivot_table(index= x_crosstab, columns= y_crosstab, aggfunc=lambda x: len(x), margins=True)
         st.write(crosstab)
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_data(file):
-    df = pd.read_csv(file)
+    df = pd.read_excel(file)
     cols = [col.strip().lower().replace(" ", "_") for col in df.columns]
     df.columns = cols
     return df
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def get_y_vars(dataset, x, variables):
     corrs = dataset.corr()[x]
     remaining_variables = [v for v in variables if v != x]
@@ -72,7 +72,7 @@ def get_y_vars(dataset, x, variables):
     format_dict = {v: f"{v} ({corrs[v]:.2f})" for v in sorted_remaining_variables}
     return sorted_remaining_variables, format_dict
     
-@st.cache
+@st.cache(allow_output_mutation=True)
 def correlate(df, numcols):
     st.header("Correlation Dynamic Dropdown")
     x_corr = st.selectbox("x", numcols, key = 'x_corr')
