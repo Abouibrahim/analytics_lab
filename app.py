@@ -22,7 +22,7 @@ def main():
 
         # a selector for the graph type
         st.title("Now what?")
-        graph_type = st.selectbox("Choose the grapg type",
+        graph_type = st.selectbox("Choose the graph type",
             ["Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab"])
         # boxplots  
         if graph_type == "Boxplot":
