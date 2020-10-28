@@ -19,41 +19,52 @@ def main():
         with st.beta_expander("Show first and last 5 rows"):
             st.write(df.head())
             st.write(df.tail())
-        # boxplots    
-        st.subheader('Boxplots')
-        boxplotcol = st.multiselect(label='What columns you want to display', options=numcols)
-        boxplotfig = px.box(df, y=boxplotcol)
-        st.plotly_chart(boxplotfig, use_container_width=True)
+
+        # a selector for the graph type
+        st.title("Now what?")
+        graph_type = st.selectbox("Choose the grapg type",
+            ["Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab"])
+        # boxplots  
+        if graph_type == "Boxplot":
+            st.subheader('Boxplots')
+            boxplotcol = st.multiselect(label='What columns you want to display', options=numcols)
+            boxplotfig = px.box(df, y=boxplotcol)
+            st.plotly_chart(boxplotfig, use_container_width=True)
         # Histogram
-        st.subheader('Histograms')
-        histcol = st.selectbox('What column you want to display', df.columns)
-        bins = st.number_input('Specify number of bins', value=20)
-        histfig = go.Figure(px.histogram(df, x=histcol,nbins=bins))
-        st.plotly_chart(histfig, use_container_width=True)
+        if graph_type == "Histogram":
+            st.subheader('Histograms')
+            histcol = st.selectbox('What column you want to display', df.columns)
+            bins = st.number_input('Specify number of bins', value=20)
+            histfig = go.Figure(px.histogram(df, x=histcol,nbins=bins))
+            st.plotly_chart(histfig, use_container_width=True)
         # scatter plot
-        st.subheader('Scatter Plot')
-        x_scatter_plot = st.selectbox('select the x-axis', numcols, key='x_scatter_plot')
-        y_scatter_plot = st.selectbox('select the y-axis', numcols, key='y_scatter_plot')
-        scatterplotfig = px.scatter(df, x=x_scatter_plot, y=y_scatter_plot)
-        st.plotly_chart(scatterplotfig, use_container_width=True)
+        if graph_type == "Scatter Plot":
+            st.subheader('Scatter Plot')
+            x_scatter_plot = st.selectbox('select the x-axis', numcols, key='x_scatter_plot')
+            y_scatter_plot = st.selectbox('select the y-axis', numcols, key='y_scatter_plot')
+            scatterplotfig = px.scatter(df, x=x_scatter_plot, y=y_scatter_plot)
+            st.plotly_chart(scatterplotfig, use_container_width=True)
         # bar plot
-        st.subheader('Bar Plot')
-        x_bar = st.selectbox('select the x-axis', categcols, key='x_bar')
-        y_bar = st.selectbox('select the y-axis', numcols, key='y_bar')
-        barfig = px.bar(df, x=x_bar, y=y_bar)
-        st.plotly_chart(barfig, use_container_width=True)
+        if graph_type == "Bar Plot":
+            st.subheader('Bar Plot')
+            x_bar = st.selectbox('select the x-axis', categcols, key='x_bar')
+            y_bar = st.selectbox('select the y-axis', numcols, key='y_bar')
+            barfig = px.bar(df, x=x_bar, y=y_bar)
+            st.plotly_chart(barfig, use_container_width=True)
         #scatter_matrix
-        st.subheader('Scatter Matrix')
-        dimensions = st.multiselect(label='What columns you want to display', options=numcols,key='dimensions')
-        scatter_matrix_color = st.selectbox('Color by', categcols, key='scatter_matrix_color')
-        scatter_matrix_fig = px.scatter_matrix(df, dimensions=dimensions, color=scatter_matrix_color)
-        st.plotly_chart(scatter_matrix_fig, use_container_width=True)
+        if graph_type == "Scatter Matrix":
+            st.subheader('Scatter Matrix')
+            dimensions = st.multiselect(label='What columns you want to display', options=numcols,key='dimensions')
+            scatter_matrix_color = st.selectbox('Color by', categcols, key='scatter_matrix_color')
+            scatter_matrix_fig = px.scatter_matrix(df, dimensions=dimensions, color=scatter_matrix_color)
+            st.plotly_chart(scatter_matrix_fig, use_container_width=True)
         # crosstab
-        st.subheader('crosstab')
-        x_crosstab = st.selectbox('select the x-axis', categcols, key='x_crosstab')
-        y_crosstab = st.selectbox('select the y-axis', categcols, key='y_crosstab')
-        crosstab = df.pivot_table(index= x_crosstab, columns= y_crosstab, aggfunc=lambda x: len(x), margins=True)
-        st.write(crosstab)
+        if graph_type == "Crosstab":
+            st.subheader('crosstab')
+            x_crosstab = st.selectbox('select the x-axis', categcols, key='x_crosstab')
+            y_crosstab = st.selectbox('select the y-axis', categcols, key='y_crosstab')
+            crosstab = df.pivot_table(index= x_crosstab, columns= y_crosstab, aggfunc=lambda x: len(x), margins=True)
+            st.write(crosstab)
 
 @st.cache(allow_output_mutation=True)
 def load_data(file):
