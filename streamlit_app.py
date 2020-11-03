@@ -8,6 +8,7 @@ import altair as alt
 import os
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 
 def main():
     uploaded_file = st.file_uploader("Choose a file")    
@@ -21,9 +22,9 @@ def main():
             st.write(df.tail())
 
         # a selector for the graph type
-        st.title("Now what?")
+        st.info('Your Catalog is *ready!* :sunglasses:')
         graph_type = st.selectbox("Choose the graph type",
-            ["Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab"])
+            ["Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab", "Correlation"])
         # boxplots  
         if graph_type == "Boxplot":
             st.subheader('Boxplots')
@@ -49,8 +50,11 @@ def main():
             st.subheader('Bar Plot')
             x_bar = st.selectbox('select the x-axis', categcols, key='x_bar')
             y_bar = st.selectbox('select the y-axis', numcols, key='y_bar')
-            barfig = px.bar(df, x=x_bar, y=y_bar)
-            st.plotly_chart(barfig, use_container_width=True)
+            aggs = ["count","sum","avg","median","mode","rms","stddev","min","max","first","last"]
+            aggs_bar = st.selectbox('Use dropdown to change aggregation', aggs, key='aggs_bar')
+            df_bar_agg = df[[x_bar,y_bar]].groupby(x_bar).agg(aggs_bar)            
+            bar_chart_fig = px.bar(df_bar_agg)
+            st.plotly_chart(bar_chart_fig, use_container_width=True)
         #scatter_matrix
         if graph_type == "Scatter Matrix":
             st.subheader('Scatter Matrix')
@@ -65,6 +69,16 @@ def main():
             y_crosstab = st.selectbox('select the y-axis', categcols, key='y_crosstab')
             crosstab = df.pivot_table(index= x_crosstab, columns= y_crosstab, aggfunc=lambda x: len(x), margins=True)
             st.write(crosstab)
+        # Correlation
+        if graph_type == "Correlation":
+            st.header("Correlation Dynamic Dropdown")
+            x_corr = st.selectbox("x", numcols, key = 'x_corr')
+            y_options, y_formats = get_y_vars(df, x_corr, numcols)
+            y_corr = st.selectbox(f"y (sorted by correlation with {x_corr})", y_options, format_func=y_formats.get, key = 'y_corr')
+            plot = alt.Chart(df).mark_circle().encode(
+                alt.X(x_corr,scale=alt.Scale(zero=False)),
+                alt.Y(y_corr,scale=alt.Scale(zero=False)))
+            st.altair_chart(plot)
 
 @st.cache(allow_output_mutation=True)
 def load_data(file):
@@ -81,18 +95,7 @@ def get_y_vars(dataset, x, variables):
         remaining_variables, key=lambda v: corrs[v], reverse=True
     )
     format_dict = {v: f"{v} ({corrs[v]:.2f})" for v in sorted_remaining_variables}
-    return sorted_remaining_variables, format_dict
-    
-@st.cache(allow_output_mutation=True)
-def correlate(df, numcols):
-    st.header("Correlation Dynamic Dropdown")
-    x_corr = st.selectbox("x", numcols, key = 'x_corr')
-    y_options, y_formats = get_y_vars(df, x_corr, numcols)
-    y_corr = st.selectbox(f"y (sorted by correlation with {x_corr})", y_options, format_func=y_formats.get, key = 'y_corr')
-    plot = alt.Chart(df).mark_circle().encode(
-        alt.X(x_corr,scale=alt.Scale(zero=False)),
-        alt.Y(y_corr,scale=alt.Scale(zero=False)))
-    st.altair_chart(plot)
+    return sorted_remaining_variables, format_dict 
 
 if __name__ == "__main__":
     main()
