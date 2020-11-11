@@ -50,7 +50,7 @@ def main():
             st.subheader('Bar Plot')
             x_bar = st.selectbox('select the x-axis', categcols, key='x_bar')
             y_bar = st.selectbox('select the y-axis', numcols, key='y_bar')
-            aggs = ["count","sum","avg","median","mode","rms","stddev","min","max","first","last"]
+            aggs = ["count","sum","mean","median","mode","rms","stddev","min","max","first","last"]
             aggs_bar = st.selectbox('Use dropdown to change aggregation', aggs, key='aggs_bar')
             df_bar_agg = df[[x_bar,y_bar]].groupby(x_bar).agg(aggs_bar)            
             bar_chart_fig = px.bar(df_bar_agg)
