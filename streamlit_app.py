@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import pandas_profiling as pp
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -17,14 +18,17 @@ def main():
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         numcols = df.select_dtypes(include=numerics).columns.to_list()
         categcols = df.select_dtypes(exclude=numerics).columns.to_list()
-        with st.beta_expander("Show first and last 5 rows"):
-            st.write(df.head())
-            st.write(df.tail())
 
         # a selector for the graph type
-        st.info('Your Catalog is *ready!* :sunglasses:')
-        graph_type = st.selectbox("Choose the graph type",
-            ["Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab", "Correlation"])
+        st.sidebar.info('Your Catalog is *ready!* :sunglasses:')
+        graph_type = st.sidebar.radio("Choose the analytics type",
+            ["Profiling", "Boxplot", "Histogram", "Scatter Plot", "Bar Plot", "Scatter Matrix", "Crosstab", "Correlation"])
+        # Profiling
+        if graph_type == "Profiling":
+            pr = ProfileReport(df, explorative=True)
+            st.title("Pandas Profiling in Streamlit")
+            st_profile_report(pr)
+
         # boxplots  
         if graph_type == "Boxplot":
             st.subheader('Boxplots')
