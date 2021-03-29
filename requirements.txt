@@ -7,4 +7,5 @@ seaborn
 altair
 plotly
 xlrd
+awesome-streamlit
 streamlit-pandas-profiling
