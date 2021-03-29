@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+#import pandas_profiling as pp
 from pandas_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 import numpy as np
@@ -12,7 +13,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 
 def main():
-    uploaded_file = st.file_uploader("Choose a file")    
+    uploaded_file = st.file_uploader("Upload your Excel file")    
     if uploaded_file is not None:
         df = load_data(uploaded_file)
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -26,7 +27,7 @@ def main():
         # Profiling
         if graph_type == "Profiling":
             pr = ProfileReport(df, explorative=True)
-            st.title("Pandas Profiling in Streamlit")
+            st.title("Profiling report")
             st_profile_report(pr)
 
         # boxplots  
