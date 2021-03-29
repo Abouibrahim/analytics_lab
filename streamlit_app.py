@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 
 def main():
-    uploaded_file = st.file_uploader("Upload your Excel file")    
+    uploaded_file = st.file_uploader("Upload your csv file")    
     if uploaded_file is not None:
         df = load_data(uploaded_file)
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
