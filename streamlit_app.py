@@ -87,7 +87,7 @@ def main():
 
 @st.cache(allow_output_mutation=True)
 def load_data(file):
-    df = pd.read_excel(file)
+    df = pd.read_csv(file)
     cols = [col.strip().lower().replace(" ", "_") for col in df.columns]
     df.columns = cols
     return df
