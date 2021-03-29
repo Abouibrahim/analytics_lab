@@ -6,5 +6,4 @@ matplotlib
 seaborn
 altair
 plotly
-xlrd
 streamlit-pandas-profiling
