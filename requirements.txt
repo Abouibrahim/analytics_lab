@@ -7,3 +7,5 @@ seaborn
 altair
 plotly
 streamlit-pandas-profiling
+scikit-learn
+scipy
